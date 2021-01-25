@@ -15,7 +15,6 @@
 	<description>Coupon exercise for MeLi</description>
 	<properties>
 		<java.version>11</java.version>
-        <kotlin.version>1.4.30-RC</kotlin.version>
     </properties>
 	<dependencies>
 		<dependency>
@@ -89,6 +88,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.8</version>
+				<configuration>
+					<repository>sebas8824/${project.artifactId}</repository>
+				</configuration>
 			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

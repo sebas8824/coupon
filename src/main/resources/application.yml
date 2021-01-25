@@ -1,3 +1,2 @@
-networking:
-  item:
-    baseUrl: https://api.mercadolibre.com/items/
+server:
+  port: 8080
