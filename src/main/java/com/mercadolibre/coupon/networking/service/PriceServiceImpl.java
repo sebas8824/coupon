@@ -5,7 +5,7 @@ import com.mercadolibre.coupon.model.response.ItemResponse;
 import com.mercadolibre.coupon.networking.client.PriceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class PriceServiceImpl implements PriceService {
 
     @Autowired
@@ -22,6 +22,7 @@ public class PriceServiceImpl implements PriceService {
     @Override
     @Cacheable(value = "coupons")
     public Coupon getOptimizedCoupon(Coupon coupon) {
+        String url = "https://api.mercadolibre.com/items/";
         Map<String, Float> items = new HashMap<>();
 
         coupon.getItem_ids().stream()
@@ -29,7 +30,7 @@ public class PriceServiceImpl implements PriceService {
                 .sequential()
                 .forEach(item -> {
                     try {
-                        ItemResponse itemResponse = priceClient.fetchPriceByItemId(item);
+                        ItemResponse itemResponse = priceClient.fetchPriceByItemId(url + item);
                         if(itemResponse.getPrice() != null)
                             items.put(itemResponse.getId(), itemResponse.getPrice());
                     } catch (Exception e) {
@@ -39,7 +40,7 @@ public class PriceServiceImpl implements PriceService {
         return new Coupon(calculate(items, coupon.getAmount()), coupon.getAmount());
     }
 
-    private List<String> calculate(Map<String, Float> items, Float amount) {
+    List<String> calculate(Map<String, Float> items, Float amount) {
         float cumulativeAmount = 0f;
         List<String> result = new ArrayList<>();
         List<Map.Entry<String, Float>> entryList = items.entrySet()
